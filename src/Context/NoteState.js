@@ -18,7 +18,7 @@ const NoteState = (props) => {
       },
     });
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
     setNotes(json);
   };
 
@@ -48,9 +48,9 @@ const NoteState = (props) => {
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYzZjgzOTg4OTA5MjM2MTgxYWUxODE2In0sImlhdCI6MTcxNTQzOTc4MX0.JgHMNINtORlKESb27aa9NjKtI_eIckb2VLugzWZViYg",
       },
     });
-    const json = await response.json();
-    console.log(json)
-    console.log(`deleted the note with the id ${id}`);
+    // const json = await response.json();
+    // console.log(json)
+    // console.log(`deleted the note with the id ${id}`);
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -60,7 +60,7 @@ const NoteState = (props) => {
   // Edit Note
   const editNote = async (id, title, description, tag) => {
     const response = await fetch(`${host}/api/notes/updatenotes/${id}`, {
-      meathod: "PUT",
+      method: "PUT",
       headers: {
         "content-type": "application/json",
         "auth-token":
@@ -68,16 +68,24 @@ const NoteState = (props) => {
       },
       body: JSON.stringify({ title, description, tag }),
     });
-    const json = response.json();
-    for (let index = 0; index < notes.length; index++) {
-      const element = notes[index];
-      if (element._id === id) {
-        element.tittle = title;
-        element.discription = description;
-        element.tag = tag;
-      }
+    // const json = await response.json();
+    // console.log(json);
+  
+    // Create a new array to avoid mutating state directly
+    let newNotes = [...notes];
+  
+    // Find the index of the note to update
+    const index = newNotes.findIndex((note) => note._id === id);
+  
+    // If the note is found, update its properties
+    if (index !== -1) {
+      newNotes[index] = { ...newNotes[index], title, description, tag };
     }
+  
+    // Update state with the new array
+    setNotes(newNotes);
   };
+  
 
   return (
     <NoteContext.Provider

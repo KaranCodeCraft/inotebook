@@ -4,8 +4,8 @@ import AddNote from "./AddNote";
 import NoteContext from "../Context/NoteContext";
 const Notes = () => {
   const context = useContext(NoteContext);
-  const { notes, getNotes } = context;
-  const [ note, setNote ]= useState({ etitle: "", edescription: "", etag: "" });
+  const { notes, getNotes, editNote } = context;
+  const [ note, setNote ]= useState({id: "", etitle: "", edescription: "", etag: "" });
   useEffect(() => {
     getNotes();
     // eslint-disable-next-line
@@ -13,14 +13,16 @@ const Notes = () => {
 
   const modalToUpdate = (note) => {
     ref.current.click();
-    setNote({ etitle: note.title, edescription: note.description, etag: note.tag });
+    setNote({id: note._id, etitle: note.title, edescription: note.description, etag: note.tag });
   };
 
   const ref = useRef(null);
+  const refClose =useRef(null);
 
   const handleClick = (e) => {
     e.preventDefault();
-    console.log(`updating the note`);
+    editNote(note.id,note.etitle, note.edescription, note.etag)
+    refClose.current.click()
   };
 
   const onChange = (e) => {
@@ -74,6 +76,7 @@ const Notes = () => {
                     aria-describedby="emailHelp"
                     value={note.etitle}
                     onChange={onChange}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -87,6 +90,7 @@ const Notes = () => {
                     name="edescription"
                     value={note.edescription}
                     onChange={onChange}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -109,10 +113,11 @@ const Notes = () => {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                ref={refClose}
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleClick}>
+              <button disabled={note.etitle.length<3|| note.edescription.length<5} type="button" className="btn btn-primary" onClick={handleClick}>
                 Update Note
               </button>
             </div>
@@ -121,6 +126,9 @@ const Notes = () => {
       </div>
       <div className="row justify-content-center">
         <h2>Your Notes</h2>
+        <div className="container">
+          {notes.length === 0 && 'Please add Notes'}
+        </div>
         {notes.map((note) => {
           return (
             <NoteItem
