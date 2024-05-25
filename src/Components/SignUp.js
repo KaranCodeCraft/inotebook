@@ -19,9 +19,9 @@ const SignUp = (props) => {
             // redirect 
             localStorage.setItem('token', json.auth_token)
             navigate('/')
-            props.showAlert('Account created succesfully','sucess')
+            // props.showAlert('Account created succesfully','sucess')
           }else{
-            props.showAlert('Invalid Credentials','danger')
+            // props.showAlert('Invalid Credentials','danger')
           }
     };
     const onChange = (e) => {
